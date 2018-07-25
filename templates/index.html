@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #target {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+    
+</head>
+<body>
+    <div id="target"></div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key={{api_key}}" ></script>
+
+    <script type="text/javascript"> 
+     $(function(){
+        var target = document.getElementById("target");
+        var map;
+        function initMap() {    
+            map = new google.maps.Map(target, {
+                center:{lat: 35.681167, lng:139.767052},
+                zoom: 10, //0~18ぐらい
+                clickableIcons: false,
+            });
+        }
+        function repaintMarkers(latlngList) {
+            for(var i = 0; i < latlngList.length; i++) {
+                var pinLatlng = latlngList[i];
+                var marker;
+                var infoWindow;
+                var marker = new google.maps.Marker({
+                    position: pinLatlng,
+                    title: 'ここだよ！',
+                    animation: google.maps.Animation.BOUNCE
+                });
+                var infoWindow = new google.maps.InfoWindow({
+                    content: "田中さん"
+                });
+                marker.addListener('click', function() {
+                    infoWindow.open(map, marker);
+                });
+                marker.setMap(map);
+            }
+        }
+        function getGeo() {
+            $.ajax({
+                type : 'get',
+                url : 'http://' + location.hostname + ':5000/get_geo',
+                contentType: 'application/json',
+                dataType : 'json',
+                scriptCharset: 'utf-8',
+                success : function(data) {
+                    console.log(JSON.stringify(data));
+                    repaintMarkers(data["latlngs"]);
+                }
+            });
+        }
+        initMap();
+        getGeo();
+    });
+    </script>
+</body>
+</html>
