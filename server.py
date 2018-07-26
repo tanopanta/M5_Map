@@ -13,6 +13,8 @@ app = Flask(__name__)
 load_dotenv()
 API_KEY = os.environ.get("MAP_API_KEY") #.envファイルに記入
 
+latlngs = []
+
 # ここからウェブアプリケーション用のルーティングを記述
 # index にアクセスしたときの処理
 @app.route('/')
@@ -22,23 +24,18 @@ def index():
 
 @app.route('/get_geo', methods=['GET'])
 def get_geo():
-    latlngs = geo.get_latlngs(API_KEY)
-
+    global latlngs
     obj = {
-        "latlngs": [
-        {
-            "lat": 35.681167, 
-            "lng": 139.767052
-        },
-        {
-            "lat": 35.682592,
-            "lng": 139.767052
-        }
-        ]
+        "latlngs": latlngs
     }
+    latlngs = []
     return Response(json.dumps(obj))
+@app.route('/post_geo', methods=['POST'])
+def post_geo():
+    latlngs.append(request.json)
+    return Response(json.dumps({"result":"OK"}))
 
 if __name__ == '__main__':
     app.debug = True # デバッグモード有効化
-    #app.run(host='0.0.0.0') # どこからでもアクセス可能に
-    app.run()
+    app.run(host='0.0.0.0') # どこからでもアクセス可能に
+    #app.run()
