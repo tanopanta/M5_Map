@@ -1,9 +1,10 @@
 import json
 import os
+import sqlite3
 from datetime import datetime
 
 from dotenv import load_dotenv
-from flask import Flask, Response, redirect, render_template, request, url_for
+from flask import Flask, Response, g, redirect, render_template, request, url_for
 
 import geo
 
@@ -12,8 +13,22 @@ app = Flask(__name__)
 
 load_dotenv()
 API_KEY = os.environ.get("MAP_API_KEY") #.envファイルに記入
+DATABASE = "database.db"
 
-latlngs = []
+
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        #コネクションを確保
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
+
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
+
 
 # ここからウェブアプリケーション用のルーティングを記述
 # index にアクセスしたときの処理
@@ -24,15 +39,26 @@ def index():
 
 @app.route('/get_geo', methods=['GET'])
 def get_geo():
-    global latlngs
+    db = get_db()
+    c = db.cursor()
+    latlngs = []
+    for row in c.execute("select * from data where date >  1532799165"):
+        latlngs.append({"lat":row[2], "lng":row[3]})
     obj = {
         "latlngs": latlngs
     }
-    latlngs = []
     return Response(json.dumps(obj))
 @app.route('/post_geo', methods=['POST'])
 def post_geo():
-    latlngs.append(request.json)
+    js = request.json #辞書型で取得
+
+    db = get_db()
+    c = db.cursor()
+    args = ('wawawa', int(datetime.now().timestamp()), js["lat"],js["lng"],  2.3, "立ち")
+    c.execute("""insert into data values
+        (?,?,?,?,?,?)""", args)
+    db.commit()
+    
     return Response(json.dumps({"result":"OK"}))
 
 if __name__ == '__main__':
