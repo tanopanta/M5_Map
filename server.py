@@ -43,6 +43,7 @@ def get_geo():
     c = db.cursor()
     latlngs = []
     for row in c.execute("select * from data where date >  1532799165"):
+        print(row)
         latlngs.append({"lat":row[2], "lng":row[3]})
     obj = {
         "latlngs": latlngs
@@ -54,7 +55,7 @@ def post_geo():
 
     db = get_db()
     c = db.cursor()
-    args = ('wawawa', int(datetime.now().timestamp()), js["lat"],js["lng"],  2.3, "立ち")
+    args = ('wawawa', int(datetime.now().timestamp()), js["lat"],js["lng"],  js["stress"], "立ち")
     c.execute("""insert into data values
         (?,?,?,?,?,?)""", args)
     db.commit()
