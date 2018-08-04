@@ -15,7 +15,6 @@ load_dotenv()
 API_KEY = os.environ.get("MAP_API_KEY") #.envファイルに記入
 DATABASE = "database.db"
 
-
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -41,12 +40,12 @@ def index():
 def get_geo():
     db = get_db()
     c = db.cursor()
-    latlngs = []
+    objects = []
     for row in c.execute("select * from data where date >  1532799165"):
         print(row)
-        latlngs.append({"lat":row[2], "lng":row[3]})
+        objects.append({"lat":row[2], "lng":row[3], "stress":row[4]})
     obj = {
-        "latlngs": latlngs
+        "objects": objects
     }
     return Response(json.dumps(obj))
 @app.route('/post_geo', methods=['POST'])

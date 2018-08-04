@@ -34,10 +34,23 @@
                 var pinLatlng = latlngList[i];
                 var marker;
                 var infoWindow;
+                var pinURL;
+                
+                var stress = pinLatlng["stress"];
+                console.log(stress);
+                if (stress < 2.0) {
+                    pinURL =  "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                } else if(stress < 5.0){
+                    pinURL = "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+                } else {
+                    pinURL = "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                }
+
                 var marker = new google.maps.Marker({
-                    position: pinLatlng,
+                    position: {"lat":pinLatlng["lat"], "lng":pinLatlng["lng"]},
                     title: 'ここだよ！',
-                    animation: google.maps.Animation.BOUNCE
+                    animation: google.maps.Animation.BOUNCE,
+                    icon:pinURL
                 });
                 var infoWindow = new google.maps.InfoWindow({
                     content: "田中さん"
@@ -57,7 +70,7 @@
                 scriptCharset: 'utf-8',
                 success : function(data) {
                     console.log(JSON.stringify(data));
-                    repaintMarkers(data["latlngs"]);
+                    repaintMarkers(data["objects"]);
                 }
             });
         }
