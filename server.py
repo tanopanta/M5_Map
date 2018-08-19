@@ -1,6 +1,7 @@
 import json
 import os
 import sqlite3
+import time
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -38,15 +39,22 @@ def index():
 
 @app.route('/get_geo', methods=['GET'])
 def get_geo():
+    #URLにパラメータtime(unixtimeで指定)がついているとき、time以降のデータのみ取り出す
+    time_later = request.args.get("time", type=int)
+    if not time_later:
+        time_later = int(time.time()) - 60 #デフォルトは60秒分
+    
     db = get_db()
     c = db.cursor()
     objects = []
-    for row in c.execute("select * from data where date >  1532799165"):
+
+    for row in c.execute("select * from data where date > ?", time_later):
         print(row)
         objects.append({"lat":row[2], "lng":row[3], "stress":row[4]})
     obj = {
         "objects": objects
     }
+
     return Response(json.dumps(obj))
 @app.route('/post_geo', methods=['POST'])
 def post_geo():
