@@ -48,7 +48,7 @@ def get_geo():
     c = db.cursor()
     objects = []
 
-    for row in c.execute("select * from data where date > ?", time_later):
+    for row in c.execute("select * from data where date > ?", (time_later,)):
         print(row)
         objects.append({"lat":row[2], "lng":row[3], "stress":row[4]})
     obj = {

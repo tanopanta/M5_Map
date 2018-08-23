@@ -15,14 +15,21 @@
 </head>
 <body>
     <h1>ストレスマッピング ver0.0.1</h1>
+    <div>
+        *リアルタイムモード, o日時指定
+    </div>
     <div id="target"></div>
+
+
+
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key={{api_key}}" ></script>
 
     <script type="text/javascript"> 
-     $(function(){
+    $(function(){
         var target = document.getElementById("target");
         var map;
+        var markers = [];
         function initMap() {    
             map = new google.maps.Map(target, {
                 center:{lat: 35.681167, lng:139.767052},
@@ -31,6 +38,13 @@
             });
         }
         function repaintMarkers(latlngList) {
+            
+            //生成済マーカーを順次すべて削除する
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers = [];//参照を開放
+
             for(var i = 0; i < latlngList.length; i++) {
                 var pinLatlng = latlngList[i];
                 var marker;
@@ -60,6 +74,7 @@
                     infoWindow.open(map, marker);
                 });
                 marker.setMap(map);
+                markers.push(marker);
             }
         }
         function getGeo() {
@@ -77,6 +92,12 @@
         }
         initMap();
         getGeo();
+        //1分ごとにデータを取得し再描画
+        var timer_id = setInterval(function(){
+            getGeo();
+            console.log("kouhuhu");
+        }, 60 * 1000);
+        // 繰り返しを中止する場合 clearInterval(timer_id);
     });
     </script>
 </body>
