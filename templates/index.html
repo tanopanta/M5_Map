@@ -21,9 +21,6 @@
 </head>
 <body>
     <h1>ストレスマッピング ver0.0.1</h1>
-    <div>
-        *リアルタイムモード, o日時指定
-    </div>
     <div id="mapid"></div>
 
 
@@ -55,7 +52,21 @@
                 
                 var marker = L.marker([pinLatlng["lat"], pinLatlng["lng"]]).addTo(map);
                 
-                marker.bindPopup("テーデーユー");
+                var name = "あいうえお";
+                var bpm = 100;
+                var state = "歩行";
+                var date = pinLatlng["date"];
+
+
+                marker.bindPopup(
+                      date 
+                    + "<p><b>"
+                    + name
+                    + "</b></p><p>心拍数:"
+                    + bpm 
+                    + "bpm</p><p>行動:"
+                    + state
+                    + "</p><a href='http://yahoo.co.jp/' target='_blank'>ログを表示</a>");
                 markers.push(marker);
 
                 var stress = pinLatlng["stress"];

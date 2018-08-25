@@ -50,7 +50,8 @@ def get_geo():
 
     for row in c.execute("select * from data where date > ?", (time_later,)):
         print(row)
-        objects.append({"lat":row[2], "lng":row[3], "stress":row[4]})
+        date = datetime.fromtimestamp(row[1]).strftime("%Y/%m/%d %H:%M:%S")
+        objects.append({"date":date, "lat":row[2], "lng":row[3], "stress":row[4]})
     obj = {
         "objects": objects
     }
