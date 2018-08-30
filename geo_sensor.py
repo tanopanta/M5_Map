@@ -2,6 +2,7 @@ import json
 import math
 import os
 import queue
+import random
 import signal
 import subprocess
 import threading
@@ -16,7 +17,8 @@ from scipy.interpolate import interp1d
 
 import grovepi2 as grovepi
 
-addr = "192.168.1.2"
+
+addr = "192.168.11.12"
 fs_pulse = 512
 fs_acc = 64
 buff_size = fs_pulse * 60
@@ -52,19 +54,20 @@ class SendThread(threading.Thread):
         load_dotenv(dotenv_path)
         API_KEY = os.environ.get("MAP_API_KEY") #.envファイルに記入
         assert API_KEY, ".envファイルにMAP_API_KEYを指定してください"
-        self.url = "https://www.googleapis.com/geolocation/v1/geolocate?key="+ API_KEY
+        #self.url = "https://www.googleapis.com/geolocation/v1/geolocate?key="+ API_KEY
+        self.url = "https://location.services.mozilla.com/v1/geolocate?key=test"
         while True:
-            try:
-                #キューからデータを取得する
-                pulse = que.get()
-            except queue.Empty:
-                print("empty")
-                break
-            stress = self.pulse_to_stress(pulse, fs_pulse, 8, 4096)
-            print(stress)
-            latlng = self.get_latlngs()
-            print(latlng)
-            self.post({"lat":latlng[0], "lng":latlng[1], "stress":stress})
+                try:
+                    #キューからデータを取得する
+                    pulse = que.get()
+                except queue.Empty:
+                    print("empty")
+                    break
+                stress = self.pulse_to_stress(pulse, fs_pulse, 8, 4096)
+                print(stress)
+                latlng = self.get_latlngs()
+                print(latlng)
+                self.post({"lat":latlng[0], "lng":latlng[1], "stress":stress})
     
     def get_latlngs(self):
         iwlist = subprocess.Popen(["sudo", "iwlist", "wlan0", "scan"], stdout=subprocess.PIPE)
@@ -77,8 +80,11 @@ class SendThread(threading.Thread):
         for add, level in zip(grep[::2], grep[1::2]):
             mac_address = add.split()[4].decode('utf-8')
             signal_level = int(level.split()[2][6:])
-            wifiAccessPoints.append({"macAddress":mac_address, "signalStrength":signal_level, "age":0})
-
+            wifiAccessPoints.append({"macAddress":mac_address, "signalStrength":signal_level})
+        if len(wifiAccessPoints) > 5:
+            random.shuffle(wifiAccessPoints)
+            wifiAccessPoints = wifiAccessPoints[:5]
+        print(wifiAccessPoints)
         json_data = json.dumps({"wifiAccessPoints":wifiAccessPoints}).encode("utf-8")
         req = urllib.request.Request(url=self.url,data=json_data,headers={'Content-type':'application/json'})
 
