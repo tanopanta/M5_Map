@@ -34,7 +34,7 @@
         var map = L.map('mapid').setView([35.748114, 139.806125], 15);
 
         // OpenStreetMapのレイヤをマップに追加
-        L.tileLayer('http://tile.openstreetmap.jp/{z}/{x}/{y}.png', {
+        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
         var markers = [];
@@ -83,7 +83,7 @@
         function getGeo() {
             $.ajax({
                 type : 'get',
-                url : 'http://' + location.hostname + ':5000/get_geo?time=2',
+                url : 'http://' + location.hostname + ':5000/get_geo',
                 contentType: 'application/json',
                 dataType : 'json',
                 scriptCharset: 'utf-8',
