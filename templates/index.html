@@ -39,7 +39,7 @@
         }).addTo(map);
         var markers = [];
 
-        function repaintMarkers(latlngList) {
+        function repaintMarkers(objects) {
             
             //生成済マーカーを順次すべて削除する
             for (var i = 0; i < markers.length; i++) {
@@ -47,15 +47,15 @@
             }
             markers = [];//参照を開放
 
-            for(var i = 0; i < latlngList.length; i++) {
-                var pinLatlng = latlngList[i];
+            for(var i = 0; i < objects.length; i++) {
+                var object = objects[i];
                 
-                var marker = L.marker([pinLatlng["lat"], pinLatlng["lng"]]).addTo(map);
+                var marker = L.marker([object["lat"], object["lng"]]).addTo(map);
                 
                 var name = "あいうえお";
                 var bpm = 100;
                 var state = "歩行";
-                var date = pinLatlng["date"];
+                var date = object["date"];
 
 
                 marker.bindPopup(
@@ -69,7 +69,7 @@
                     + "</p><a href='http://yahoo.co.jp/' target='_blank'>ログを表示</a>");
                 markers.push(marker);
 
-                var stress = pinLatlng["stress"];
+                var stress = object["stress"];
 
                 if (stress < 2.0) {
                     L.DomUtil.addClass( marker._icon, 'leaflet-marker-icon-color-green' );
@@ -80,7 +80,7 @@
                 }
             }
         }
-        function getGeo() {
+        function getSensorData() {
             $.ajax({
                 type : 'get',
                 url : 'http://' + location.hostname + ':5000/get_geo',
@@ -94,10 +94,10 @@
             });
         }
 
-        getGeo();
+        getSensorData();
         //1分ごとにデータを取得し再描画
         var timer_id = setInterval(function(){
-            getGeo();
+            getSensorData();
             console.log("kouhuhu");
         }, 60 * 1000);
         // 繰り返しを中止する場合 clearInterval(timer_id);
