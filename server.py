@@ -37,6 +37,10 @@ def index():
     # index.html をレンダリングする
     return render_template('index.html', api_key=API_KEY)
 
+@app.route('/person')
+def person():
+    return render_template('person.html', api_key=API_KEY)
+
 @app.route('/get_geo', methods=['GET'])
 def get_geo():
     #URLにパラメータtime(unixtimeで指定)がついているとき、time以降のデータのみ取り出す
