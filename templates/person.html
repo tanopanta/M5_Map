@@ -116,7 +116,7 @@
         function createChart(chartID, axes) {
             var lineChartData = [{
                 label: "Series 1",
-                values: [{time: Math.floor(new Date().getTime() / 1000), y: Math.random()*10}]
+                values: []
             }];
             var myChart = $(chartID).epoch({
                 type: 'time.line',
@@ -127,10 +127,21 @@
         }
         function addChart(objects) {
             var aaa = [{time: Math.floor(new Date().getTime() / 1000), y: Math.random()*10}];
-            console.log(aaa);
-            bpmChart.push(aaa);
-            stressChart.push(aaa);
-            statusChart.push(aaa);
+            
+            for(var i = 0; i < objects.length; i++) {
+                var object = objects[i];
+                
+                var bpm = 100;
+                var state = "歩行";
+                var date = object["date"];
+                var stress = object["stress"];
+                
+                var stressObj = [{time: date, y: stress}];
+
+                bpmChart.push(aaa);
+                stressChart.push(stressObj);
+                statusChart.push(aaa);
+            }
         }
         var bpmChart = createChart('#bpmChart', ['left', 'right']);
         var stressChart = createChart('#stressChart', ['left', 'right']);
@@ -139,7 +150,7 @@
         //1分ごとにデータを取得し再描画
         var timer_id = setInterval(function(){
             getSensorData();
-        }, 1 * 1000);
+        }, 60 * 1000);
 
         // 繰り返しを中止する場合 clearInterval(timer_id);
 
