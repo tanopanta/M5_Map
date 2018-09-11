@@ -131,14 +131,15 @@
             for(var i = 0; i < objects.length; i++) {
                 var object = objects[i];
                 
-                var bpm = 100;
                 var state = "歩行";
                 var date = object["date"];
                 var stress = object["stress"];
+                var bpm = object["bpm"];
                 
                 var stressObj = [{time: date, y: stress}];
+                var bpmObj = [{time: date, y:bpm}];
 
-                bpmChart.push(aaa);
+                bpmChart.push(bpmObj);
                 stressChart.push(stressObj);
                 statusChart.push(aaa);
             }

@@ -4,7 +4,7 @@ import sqlite3
 import time
 from datetime import datetime
 
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 from flask import Flask, Response, g, redirect, render_template, request, url_for
 
 import geo
@@ -12,8 +12,9 @@ import geo
 # 自身の名称を app という名前でインスタンス化する
 app = Flask(__name__)
 
-load_dotenv()
-API_KEY = os.environ.get("MAP_API_KEY") #.envファイルに記入
+#load_dotenv()
+#API_KEY = os.environ.get("MAP_API_KEY") #.envファイルに記入
+API_KEY = "test"
 DATABASE = "database.db"
 
 def get_db():
@@ -55,7 +56,7 @@ def get_geo():
     for row in c.execute("select * from data where date > ?", (time_later,)):
         print(row)
         date = datetime.fromtimestamp(row[1]).strftime("%Y/%m/%d %H:%M:%S")
-        objects.append({"date":date, "lat":row[2], "lng":row[3], "stress":row[4]})
+        objects.append({"date":date, "lat":row[2], "lng":row[3], "stress":row[4], "bpm":row[6]})
     obj = {
         "objects": objects
     }
@@ -67,9 +68,9 @@ def post_geo():
 
     db = get_db()
     c = db.cursor()
-    args = ('wawawa', int(datetime.now().timestamp()), js["lat"],js["lng"],  js["stress"], "立ち")
+    args = ('wawawa', int(datetime.now().timestamp()), js["lat"],js["lng"],  js["stress"], "立ち", js["bpm"])
     c.execute("""insert into data values
-        (?,?,?,?,?,?)""", args)
+        (?,?,?,?,?,?,?)""", args)
     db.commit()
     
     return Response(json.dumps({"result":"OK"}))

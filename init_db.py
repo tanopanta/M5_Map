@@ -4,7 +4,7 @@ import sqlite3
 
 conn = sqlite3.connect('database.db')
 c = conn.cursor()
-"""
+
 c.execute('''
         create table if not exists data(
             id text,
@@ -14,8 +14,8 @@ c.execute('''
             stress real,
             act text
             bpm real)''')
-"""
-#c.execute("alter table data add culumn bpm real")
+
+#c.execute("alter table data add column bpm real")
 conn.commit()
 conn.close()
 print("DB初期化完了！")
