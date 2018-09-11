@@ -7,7 +7,7 @@ from datetime import datetime
 #from dotenv import load_dotenv
 from flask import Flask, Response, g, redirect, render_template, request, url_for
 
-import geo
+#import geo
 
 # 自身の名称を app という名前でインスタンス化する
 app = Flask(__name__)

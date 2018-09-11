@@ -141,12 +141,12 @@
 
                 bpmChart.push(bpmObj);
                 stressChart.push(stressObj);
-                statusChart.push(aaa);
+                //statusChart.push(aaa);
             }
         }
         var bpmChart = createChart('#bpmChart', ['left', 'right']);
-        var stressChart = createChart('#stressChart', ['left', 'right']);
-        var statusChart = createChart('#statusChart', ['left', 'right', 'bottom']);
+        var stressChart = createChart('#stressChart', ['left', 'right', 'bottom']);
+        //var statusChart = createChart('#statusChart', ['left', 'right', 'bottom']);
 
         //1分ごとにデータを取得し再描画
         var timer_id = setInterval(function(){
