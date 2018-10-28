@@ -4,17 +4,13 @@ import sqlite3
 import time
 from datetime import datetime
 
-#from dotenv import load_dotenv
 from flask import Flask, Response, g, redirect, render_template, request, url_for
 
-#import geo
 
 # 自身の名称を app という名前でインスタンス化する
 app = Flask(__name__)
 
-#load_dotenv()
-#API_KEY = os.environ.get("MAP_API_KEY") #.envファイルに記入
-API_KEY = "test"
+
 DATABASE = "database.db"
 
 def get_db():
@@ -36,11 +32,11 @@ def close_connection(exception):
 @app.route('/')
 def index():
     # index.html をレンダリングする
-    return render_template('index.html', api_key=API_KEY)
+    return render_template('index.html')
 
 @app.route('/person')
 def person():
-    return render_template('person.html', api_key=API_KEY)
+    return render_template('person.html')
 
 @app.route('/get_geo', methods=['GET'])
 def get_geo():
@@ -62,7 +58,7 @@ def get_geo():
     }
 
     return Response(json.dumps(obj))
-@app.route('/post_geo', methods=['POST'])
+@app.route('/post', methods=['POST'])
 def post_geo():
     js = request.json #辞書型で取得
 
@@ -78,4 +74,3 @@ def post_geo():
 if __name__ == '__main__':
     app.debug = True # デバッグモード有効化
     app.run(host='0.0.0.0') # どこからでもアクセス可能に
-    #app.run()
