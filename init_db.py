@@ -11,9 +11,10 @@ c.execute('''
             date int,
             lat real,
             lng real,
-            stress real,
-            act text
-            bpm real)''')
+            valence real,
+            arousal real,
+            bpm real
+            )''')
 
 #c.execute("alter table data add column bpm real")
 conn.commit()
